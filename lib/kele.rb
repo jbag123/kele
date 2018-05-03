@@ -2,7 +2,6 @@ require 'httparty'
 require 'json'
 class Kele
   include HTTParty
-  base_uri 'https://www.bloc.io/api/v1'
   def initialize(email, password)
     response = self.class.post('https://www.bloc.io/api/v1/sessions', body: { "email": email, "password": password })
     @auth_token = response["auth_token"]
@@ -10,8 +9,17 @@ class Kele
   end
 
   def get_me
-    response = self.class.get('https://private-anon-38190ece44-blocapi.apiary-proxy.com/api/v1/users/me', headers: { "authorization" => @auth_token })
+    response = self.class.get('https://www.bloc.io/api/v1/users/me', headers: { "authorization" => @auth_token })
     stringResponse = response.to_s
     hash = JSON.parse(stringResponse)
+  end
+
+  def get_mentor_availability(mentor_id)
+    response = self.class.get("https://www.bloc.io/api/v1/mentors/#{mentor_id}/student_availability", headers: { "authorization" => @auth_token })
+    array = []
+    response.each do |r|
+      array.push(r)
+    end
+    return array
   end
 end
