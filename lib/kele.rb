@@ -25,6 +25,22 @@ class Kele
     return array
   end
   
+  def get_messages(number = 0)
+    if number == 0
+      response = self.class.get(base_uri("/message_threads"), headers: { "authorization" => @auth_token })
+    else
+      response = self.class.get(base_uri("/message_threads?page=#{number}"), headers: { "authorization" => @auth_token })
+    end
+    @message = JSON.parse(response.body)
+  end
+  
+  def create_message(sender,recipient_id,token,subject,stripped_text)
+    params = "/messages?sender=#{sender}&recipient_id=#{recipient_id}&token=#{token}&subject=#{subject}&stripped-text=#{stripped_text}"
+    puts params
+    response = self.class.post(base_uri(params), headers: { "authorization" => @auth_token })
+    puts response.body
+  end
+  
   private
     def base_uri(endpoint)
         "https://www.bloc.io/api/v1#{endpoint}"
