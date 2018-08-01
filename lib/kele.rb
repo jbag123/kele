@@ -13,7 +13,7 @@ class Kele
   def get_me
     response = self.class.get('https://www.bloc.io/api/v1/users/me', headers: { "authorization" => @auth_token })
     stringResponse = response.to_s
-    hash = JSON.parse(stringResponse)
+    JSON.parse(stringResponse)
   end
 
   def get_mentor_availability(mentor_id)
@@ -40,6 +40,12 @@ class Kele
     response = self.class.post(base_uri(params), headers: { "authorization" => @auth_token })
     puts response.body
   end
+  
+  def remaining_checkpoints(id)
+    response = self.class.get(base_uri("/enrollment_chains/#{id}/checkpoints_remaining_in_section"), headers: { "authorization" => @auth_token })
+    JSON.parse(response.body)
+  end
+  
   
   private
     def base_uri(endpoint)
